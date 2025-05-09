@@ -158,6 +158,8 @@
     <ClInclude Include="StartingAssetSolver.h" />
     <ClInclude Include="Strategy.h" />
     <ClInclude Include="TaskExecutor.h" />
+    <ClInclude Include="TrustRegionSolver.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />

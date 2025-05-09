@@ -26,6 +26,7 @@
 #include <Eigen/dense>
 #include "Solver.h"
 #include "Constraint.h"
+#include "UI.h"
 
 namespace ALM {
 
@@ -45,12 +46,13 @@ namespace ALM {
 
         SolverResults solve(const std::function<double(Eigen::VectorXd)>& f,
             const Eigen::VectorXd& x0) override {
+
             Eigen::VectorXd x = x0;
             double fx = f(x);
             int n = x.size();
 
             for (int iter = 0; iter < max_iter_; ++iter) {
-                std::cout << "[iteration " << iter << "]\tstarted";
+
                 Eigen::VectorXd grad(n);
                 double eps = 1e-6;
 
@@ -74,7 +76,7 @@ namespace ALM {
                 }
 
                 fx = fx_new;
-                std::cout << " | ended" << std::endl;
+                UI::debugPrint("Iteration " + std::to_string(iter) + ": " + std::to_string(fx));
             }
 
             return { x, fx, max_iter_, false };

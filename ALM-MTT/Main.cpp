@@ -41,28 +41,38 @@
 #include "ProjectedGradientSolver.h"
 #include "Constraint.h"
 #include "BoxConstraint.h"
+#include "UI.h"
+#include "TrustRegionSolver.h"
 
 using namespace QuantLib;
 using namespace ALM;
 
 int main() {
-    std::cout << "ALM Optimization Test\nCopyright (c) 2025 Harold James Krause\n" << std::endl;
+    UI::useColor();
+    UI::setVerbosity(UI::Verbosity::Debug);
 
+    UI::section("ALM Optimization Test");
+    UI::print("ALM Optimization Test\nCopyright (c) 2025 Harold James Krause\n");
 
-
-    std::cout 
-        << "******************************************************\n\n" 
-        << "Configuring..." 
-        << std::endl;
+    UI::section("Config");
 
     Date today(7, May, 2025);
     Settings::instance().evaluationDate() = today;
 
-    std::cout << "Multithreading:\tstarted";
-    auto executor = std::make_shared<MultiThreadedExecutor>();
-    std::cout << " | ended" << std::endl;
+    bool use_mtt = UI::askYesNo("Use multithreading?");
 
-    std::cout  << "Yield curves:\tstarted";
+    std::shared_ptr<TaskExecutor> executor;
+    if (use_mtt) {
+        executor = std::make_shared<MultiThreadedExecutor>();
+        UI::print("Multi-threading configuration complete");
+        UI::debugPrint("Initialized MultiThreadedExecutor with default limits");
+    } else {
+        executor = std::make_shared<SingleThreadedExecutor>();
+        UI::print("Single-threading configuration complete");
+        UI::debugPrint("Initialized SingleThreadedExecutor");
+        UI::warn("Single-threading not recommended for complex projections");
+    }
+
     std::vector<std::shared_ptr<YieldTermStructure>> curves;
     auto make_flat_curve = [&](Rate r) {
         return std::make_shared<FlatForward>(today, Handle<Quote>(std::make_shared<SimpleQuote>(r)), Actual365Fixed());
@@ -70,9 +80,10 @@ int main() {
     for (auto i = 0; i < 9; i++) {
         curves.push_back(make_flat_curve(0.01 * i + 0.03));
     }
-    std::cout << " | ended" << std::endl;
+    
+    UI::print("Initialized scenario count: 9");
+    UI::debugPrint("FlatForward with annual compounded rate: 0.01i + 0.03");
 
-    std::cout << "Assets:\t\tstarted";
     Portfolio assetPortfolio;
     for (int i = 0; i < 10; ++i) {
         double coupon = 0.03 + 0.001 * i;
@@ -80,36 +91,45 @@ int main() {
         auto cfs = CashFlowBuilder::fixedRateBond(today, maturity, coupon, 1000.0);
         assetPortfolio.addAsset(Asset(std::move(cfs)));
     }
-    std::cout << " | ended" << std::endl;
+    
+    UI::print("Inforce asset count: 10");
+    UI::debugPrint("FixedRateBond with maturity: 2(i+1) Years");
+    UI::debugPrint("FixedRateBond with coupon rate: 0.001i + 0.03");
 
-    std::cout << "Liabilities:\tstarted";
     // 4. Liability portfolio: 10 annual payouts of 5000
     Portfolio liabilityPortfolio;
     for (int i = 1; i <= 30; ++i) {
         Date liabDate = today + Period(i, Years);
         liabilityPortfolio.addAsset(Asset({ { liabDate, 1000.0 } }));
     }
-    std::cout << " | ended" << std::endl;
+    UI::print("Liability cash flow count: 30");
+    UI::debugPrint("Fixed annual cash flows of 1000");
 
-    std::cout << "Strategies:\tstarted";
     // 5. Strategy: sell pro-rata + reinvest into 10Y bonds at 4.5%
     auto sell = std::make_shared<SellProRata>();
+    UI::print("Disinvestment strategy initialized");
+    UI::debugPrint("Sell pro-rata");
+
     auto buy = std::make_shared<BuyBonds>(std::vector<BuyBonds::BondTemplate>{
         {1.0, 0.045, Period(5, Years)}
     });
-    auto strategy = std::make_shared<RebalanceStrategy>(sell, buy);
-    std::cout << " | ended" << std::endl;
+    UI::print("Reinvestment strategy initialized");
+    UI::debugPrint("Buy 5Y bonds yielding 4.5%");
 
-    std::cout << "Solver:\t\tstarted";
+    auto strategy = std::make_shared<RebalanceStrategy>(sell, buy);
+
+
     size_t n_assets = assetPortfolio.assets().size();
     Eigen::VectorXd x0 = Eigen::VectorXd::Constant(n_assets, 1.0);
     Eigen::VectorXd lower = Eigen::VectorXd::Constant(n_assets, 0.0);
     Eigen::VectorXd upper = Eigen::VectorXd::Constant(n_assets, 1.0);
 
-
     std::vector<std::shared_ptr<ALM::Constraint>> constraints = {
         std::make_shared<ALM::BoxConstraint>(lower, upper)
     };
+
+    UI::print("Solver constraints initialized");
+    UI::debugPrint("X E [0, 1]");
 
     auto f = [&](const Eigen::VectorXd& x) {
         Portfolio portfolio = assetPortfolio;
@@ -139,24 +159,28 @@ int main() {
 
         };
 
-    ProjectedGradientSolver solver(constraints, 20);
-    std::cout << " | ended\n" << std::endl;
+    UI::print("Solver lambda initialized");
+    UI::debugPrint("Max solved-for assets across each scenario");
 
-    std::cout << "******************************************************\n\n"
-        << "Solving...\n"
-        << "Length:\t\t10 Years\n"
-        << "Time step:\tAnnual\n"
-        << "Scenarios:\t9\n"
-        << "Iterations:\t20\n"
-        << std::endl;
+    TrustRegionSolver solver(constraints, 12);
+    UI::print("Trust region solver initialized");
+    UI::debugPrint("Dogleg subproblem");
+    UI::debugPrint("Max iterations: 12");
+    if (use_mtt) {
+        UI::warn("Gradients and hessians are not parallelized");
+    }
 
+    UI::section("Solver");
+    UI::print("Begin solving lambda");
     SolverResults result = solver.solve(f, x0);
 
-    std::cout << "\n******************************************************\n\n";
+    UI::print("End solving lambda");
+    result.success ? UI::print("Solver successfully converged") : UI::warn("Solver failed to converge");
 
     std::cout << "Asset Market Value:\t" << std::setprecision(2) << std::fixed << result.objective << std::endl;
     std::cout << "Asset Scalars:\t\t[" << std::setprecision(2) << std::fixed  << result.x.transpose() << "]" << std::endl;
     std::cout << "\n";
 
     return 0;
+    
 }

@@ -33,6 +33,7 @@
 #include "Curve.h"
 #include "TaskExecutor.h"
 #include "Strategy.h"
+#include "UI.h"
 
 namespace ALM {
 

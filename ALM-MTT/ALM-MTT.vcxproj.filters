@@ -87,7 +87,7 @@
     <ClInclude Include="BoxConstraint.h">
       <Filter>Header Files\Optimization</Filter>
     </ClInclude>
-    <ClInclude Include="GradientSolver.h">
+    <ClInclude Include="ProjectedGradientSolver.h">
       <Filter>Header Files\Optimization</Filter>
     </ClInclude>
   </ItemGroup>

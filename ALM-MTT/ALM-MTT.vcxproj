@@ -145,7 +145,7 @@
     <ClInclude Include="Constraint.h" />
     <ClInclude Include="Curve.h" />
     <ClInclude Include="Date.h" />
-    <ClInclude Include="GradientSolver.h" />
+    <ClInclude Include="ProjectedGradientSolver.h" />
     <ClInclude Include="MultiScenarioProjection.h" />
     <ClInclude Include="MultiThreadedExecutor.h" />
     <ClInclude Include="Portfolio.h" />

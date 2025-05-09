@@ -28,6 +28,7 @@
 #include <vector>
 #include <memory>
 #include <iostream>
+#include <mutex>
 
 #include "Date.h"
 #include "Portfolio.h"
@@ -68,8 +69,8 @@ namespace ALM {
             std::vector<std::shared_ptr<Curve>> curves,
             Date start,
             Date end,
-            Period step = Period(1, TimeUnit::Months))
-            : assets_(std::move(assets)),
+            Period step = Period(1, TimeUnit::Months)) : 
+            assets_(std::move(assets)),
             liabilities_(std::move(liabilities)),
             strategy_(std::move(strategy)),
             executor_(std::move(executor)),
@@ -90,28 +91,39 @@ namespace ALM {
          * @return A vector of ProjectionResult objects, one per scenario.
          */
         std::vector<ProjectionResult> run() {
+            std::vector<std::function<void()>> tasks;
+
             std::vector<ProjectionResult> results;
-
-            // Shared projection object reuses relinkable handle
-
+            std::mutex results_mutex;
 
             StartingAssetSolver solver;
 
             for (size_t i = 0; i < curves_.size(); ++i) {
+                auto curve = curves_[i];
+                auto task = [&]() {
+                    Projection projection(
+                        assets_,
+                        liabilities_,
+                        strategy_,
+                        executor_,
+                        curve,
+                        start_,
+                        end_,
+                        step_);
 
-                Projection projection(
-                    assets_,
-                    liabilities_,
-                    strategy_,
-                    executor_,
-                    curves_[i],
-                    start_,
-                    end_,
-                    step_);
+                    double scalar = solver.solve(projection);  // Solve for funding level
+                    auto result = projection.run(scalar); // Store the result
+                    {
+                        std::lock_guard<std::mutex> lock(results_mutex);
+                        results.push_back(result);
+                    }
+                };
 
-                double scalar = solver.solve(projection);  // Solve for funding level
-                results.push_back(projection.run(scalar)); // Store the result
+                tasks.push_back(task);
+
             }
+
+            executor_->submitAndWait(tasks);
 
             return results;
         }

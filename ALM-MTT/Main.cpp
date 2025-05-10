@@ -22,29 +22,8 @@
     SOFTWARE.
 */
 
-#include <iostream>
-#include <memory>
-#include <ql/quantlib.hpp>
+#include "ALM.h"
 
-#include "Date.h"
-#include "Asset.h"
-#include "Portfolio.h"
-#include "CashFlowBuilder.h"
-#include "TaskExecutor.h"
-#include "MultiThreadedExecutor.h"
-#include "SingleThreadedExecutor.h"
-#include "Strategy.h"
-#include "BuyBonds.h"
-#include "SellProRata.h"
-#include "RebalanceStrategy.h"
-#include "MultiScenarioProjection.h"
-#include "ProjectedGradientSolver.h"
-#include "Constraint.h"
-#include "BoxConstraint.h"
-#include "UI.h"
-#include "TrustRegionSolver.h"
-
-using namespace QuantLib;
 using namespace ALM;
 
 int main() {
@@ -56,8 +35,7 @@ int main() {
 
     UI::section("Config");
 
-    Date today(7, May, 2025);
-    Settings::instance().evaluationDate() = today;
+    Date today({2025, 12, 31});
 
     bool use_mtt = UI::askYesNo("Use multithreading?");
 
@@ -66,32 +44,30 @@ int main() {
         executor = std::make_shared<MultiThreadedExecutor>();
         UI::print("Multi-threading configuration complete");
         UI::debugPrint("Initialized MultiThreadedExecutor with default limits");
-    } else {
+    }
+    else {
         executor = std::make_shared<SingleThreadedExecutor>();
         UI::print("Single-threading configuration complete");
         UI::debugPrint("Initialized SingleThreadedExecutor");
         UI::warn("Single-threading not recommended for complex projections");
     }
 
-    std::vector<std::shared_ptr<YieldTermStructure>> curves;
-    auto make_flat_curve = [&](Rate r) {
-        return std::make_shared<FlatForward>(today, Handle<Quote>(std::make_shared<SimpleQuote>(r)), Actual365Fixed());
-        };
+    std::vector<std::shared_ptr<YieldCurve>> curves;
     for (auto i = 0; i < 9; i++) {
-        curves.push_back(make_flat_curve(0.01 * i + 0.03));
+        curves.push_back(std::make_shared<FlatForward>(today, 0.01 * i + 0.03, DayCounter(DayCounter::Convention::ActualActual)));
     }
-    
+
     UI::print("Initialized scenario count: 9");
     UI::debugPrint("FlatForward with annual compounded rate: 0.01i + 0.03");
 
     Portfolio assetPortfolio;
     for (int i = 0; i < 10; ++i) {
         double coupon = 0.03 + 0.001 * i;
-        Date maturity = today + Period((i + 1)*2, Years);
+        Date maturity = today + Duration((i + 1) * 2, Duration::Unit::Years);
         auto cfs = CashFlowBuilder::fixedRateBond(today, maturity, coupon, 1000.0);
         assetPortfolio.addAsset(Asset(std::move(cfs)));
     }
-    
+
     UI::print("Inforce asset count: 10");
     UI::debugPrint("FixedRateBond with maturity: 2(i+1) Years");
     UI::debugPrint("FixedRateBond with coupon rate: 0.001i + 0.03");
@@ -99,7 +75,7 @@ int main() {
     // 4. Liability portfolio: 10 annual payouts of 5000
     Portfolio liabilityPortfolio;
     for (int i = 1; i <= 30; ++i) {
-        Date liabDate = today + Period(i, Years);
+        Date liabDate = today + Duration(i, Duration::Unit::Years);
         liabilityPortfolio.addAsset(Asset({ { liabDate, 1000.0 } }));
     }
     UI::print("Liability cash flow count: 30");
@@ -111,7 +87,7 @@ int main() {
     UI::debugPrint("Sell pro-rata");
 
     auto buy = std::make_shared<BuyBonds>(std::vector<BuyBonds::BondTemplate>{
-        {1.0, 0.045, Period(5, Years)}
+        {1.0, 0.045, Duration(5, Duration::Unit::Years)}
     });
     UI::print("Reinvestment strategy initialized");
     UI::debugPrint("Buy 5Y bonds yielding 4.5%");
@@ -136,7 +112,7 @@ int main() {
         for (auto i = 0; i < x.size(); i++) {
             portfolio.assets()[i].setVolume(x[i]);
         }
-        
+
         MultiScenarioProjection runner(
             portfolio,
             liabilityPortfolio,
@@ -144,8 +120,8 @@ int main() {
             executor,
             curves,
             today,
-            today + Period(10, Years),
-            Period(1, Years)
+            today + Duration(10, Duration::Unit::Years),
+            Duration(1, Duration::Unit::Years)
         );
 
         auto results = runner.run();
@@ -172,15 +148,15 @@ int main() {
 
     UI::section("Solver");
     UI::print("Begin solving lambda");
-    SolverResults result = solver.solve(f, x0);
+    SolverXdResults result = solver.solve(f, x0);
 
     UI::print("End solving lambda");
     result.success ? UI::print("Solver successfully converged") : UI::warn("Solver failed to converge");
 
     std::cout << "Asset Market Value:\t" << std::setprecision(2) << std::fixed << result.objective << std::endl;
-    std::cout << "Asset Scalars:\t\t[" << std::setprecision(2) << std::fixed  << result.x.transpose() << "]" << std::endl;
+    std::cout << "Asset Scalars:\t\t[" << std::setprecision(2) << std::fixed << result.x.transpose() << "]" << std::endl;
     std::cout << "\n";
 
     return 0;
-    
+
 }

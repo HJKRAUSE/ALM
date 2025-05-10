@@ -13,32 +13,14 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Engine">
-      <UniqueIdentifier>{24b2f21c-9b17-4822-acf5-5976d9b56311}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Optimization">
       <UniqueIdentifier>{457edebd-2119-49e4-89e2-3b24e0b99735}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Model">
       <UniqueIdentifier>{b953249c-2cc5-4e34-8ada-b6f9a80e7ce9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Core">
-      <UniqueIdentifier>{4a820563-6c38-4288-8115-d0ded5cd6a4c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Core\Threading">
-      <UniqueIdentifier>{feb8105a-31e2-445b-88d1-ce6fd8610000}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Model\Basic Types">
-      <UniqueIdentifier>{11c2b464-8d0d-4154-a32b-c7f14f9002f9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Model\Helpers">
       <UniqueIdentifier>{7a605983-7025-4855-84a7-844a0d937847}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Engine\Strategy">
-      <UniqueIdentifier>{65eca9b0-bdd4-41b0-b0e0-b3211323e8b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Model\Core Types">
-      <UniqueIdentifier>{63347671-048d-446a-ab82-acd8099ca199}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Optimization\Constraints">
       <UniqueIdentifier>{56ea3904-9945-462d-a183-28986140dc7e}</UniqueIdentifier>
@@ -46,46 +28,37 @@
     <Filter Include="Header Files\Optimization\Solvers">
       <UniqueIdentifier>{c1fe9a35-b5e2-4692-986d-49d8ca17afb3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Engine\Projection">
-      <UniqueIdentifier>{edbc4128-c3a3-418d-9e1c-c53e91d96397}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Core\Basic Types">
-      <UniqueIdentifier>{d186dba2-34ef-4524-ba66-ff96ee004580}</UniqueIdentifier>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{efa64ea7-ed04-4f67-acc4-0ba49735ce83}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Core\UI">
-      <UniqueIdentifier>{08dd6a56-96de-4f78-aa10-faf1aa60a72d}</UniqueIdentifier>
+      <UniqueIdentifier>{876e4517-74e7-4363-bc0b-54bc9ecd973f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core\Task Execution">
+      <UniqueIdentifier>{88c3785e-1ab0-45aa-ba8f-dfa230f2f1f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Model\Yield Curves">
+      <UniqueIdentifier>{436d72d8-aadd-42d9-b781-b7aaaeef3dc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Date Time">
+      <UniqueIdentifier>{bb7271dc-b127-42c1-b91c-290343454c7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Model\Assets">
+      <UniqueIdentifier>{b677ccc6-7fc7-4b48-ae02-a038e3a190ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Model\Projection">
+      <UniqueIdentifier>{edbc4128-c3a3-418d-9e1c-c53e91d96397}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Model\Strategy">
+      <UniqueIdentifier>{65eca9b0-bdd4-41b0-b0e0-b3211323e8b7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MultiThreadedExecutor.h">
-      <Filter>Header Files\Core\Threading</Filter>
-    </ClInclude>
-    <ClInclude Include="SingleThreadedExecutor.h">
-      <Filter>Header Files\Core\Threading</Filter>
-    </ClInclude>
-    <ClInclude Include="TaskExecutor.h">
-      <Filter>Header Files\Core\Threading</Filter>
-    </ClInclude>
-    <ClInclude Include="CashFlow.h">
-      <Filter>Header Files\Model\Basic Types</Filter>
-    </ClInclude>
-    <ClInclude Include="Curve.h">
-      <Filter>Header Files\Model\Basic Types</Filter>
-    </ClInclude>
-    <ClInclude Include="Date.h">
-      <Filter>Header Files\Model\Basic Types</Filter>
-    </ClInclude>
     <ClInclude Include="CashFlowBuilder.h">
       <Filter>Header Files\Model\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="BuyBonds.h">
-      <Filter>Header Files\Engine\Strategy</Filter>
-    </ClInclude>
-    <ClInclude Include="Asset.h">
-      <Filter>Header Files\Model\Core Types</Filter>
-    </ClInclude>
-    <ClInclude Include="Portfolio.h">
-      <Filter>Header Files\Model\Core Types</Filter>
+      <Filter>Header Files\Model\Strategy</Filter>
     </ClInclude>
     <ClInclude Include="Constraint.h">
       <Filter>Header Files\Optimization\Constraints</Filter>
@@ -96,34 +69,73 @@
     <ClInclude Include="ProjectedGradientSolver.h">
       <Filter>Header Files\Optimization\Solvers</Filter>
     </ClInclude>
-    <ClInclude Include="Solver.h">
+    <ClInclude Include="SolverXd.h">
       <Filter>Header Files\Optimization\Solvers</Filter>
     </ClInclude>
     <ClInclude Include="RebalanceStrategy.h">
-      <Filter>Header Files\Engine\Strategy</Filter>
+      <Filter>Header Files\Model\Strategy</Filter>
     </ClInclude>
     <ClInclude Include="SellProRata.h">
-      <Filter>Header Files\Engine\Strategy</Filter>
+      <Filter>Header Files\Model\Strategy</Filter>
     </ClInclude>
     <ClInclude Include="Strategy.h">
-      <Filter>Header Files\Engine\Strategy</Filter>
+      <Filter>Header Files\Model\Strategy</Filter>
     </ClInclude>
     <ClInclude Include="MultiScenarioProjection.h">
-      <Filter>Header Files\Engine\Projection</Filter>
+      <Filter>Header Files\Model\Projection</Filter>
     </ClInclude>
     <ClInclude Include="Projection.h">
-      <Filter>Header Files\Engine\Projection</Filter>
+      <Filter>Header Files\Model\Projection</Filter>
     </ClInclude>
     <ClInclude Include="StartingAssetSolver.h">
-      <Filter>Header Files\Engine\Projection</Filter>
+      <Filter>Header Files\Model\Projection</Filter>
     </ClInclude>
-    <ClInclude Include="RelinkableHandle.h">
-      <Filter>Header Files\Core\Basic Types</Filter>
+    <ClInclude Include="TrustRegionSolver.h">
+      <Filter>Header Files\Optimization\Solvers</Filter>
+    </ClInclude>
+    <ClInclude Include="Date.h">
+      <Filter>Header Files\Date Time</Filter>
+    </ClInclude>
+    <ClInclude Include="DayCounter.h">
+      <Filter>Header Files\Date Time</Filter>
+    </ClInclude>
+    <ClInclude Include="CashFlow.h">
+      <Filter>Header Files\Model\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Portfolio.h">
+      <Filter>Header Files\Model\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Asset.h">
+      <Filter>Header Files\Model\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="YieldCurve.h">
+      <Filter>Header Files\Model\Yield Curves</Filter>
+    </ClInclude>
+    <ClInclude Include="FlatForward.h">
+      <Filter>Header Files\Model\Yield Curves</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskExecutor.h">
+      <Filter>Header Files\Core\Task Execution</Filter>
+    </ClInclude>
+    <ClInclude Include="SingleThreadedExecutor.h">
+      <Filter>Header Files\Core\Task Execution</Filter>
+    </ClInclude>
+    <ClInclude Include="MultiThreadedExecutor.h">
+      <Filter>Header Files\Core\Task Execution</Filter>
     </ClInclude>
     <ClInclude Include="UI.h">
       <Filter>Header Files\Core\UI</Filter>
     </ClInclude>
-    <ClInclude Include="TrustRegionSolver.h">
+    <ClInclude Include="Calendar.h">
+      <Filter>Header Files\Date Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Schedule.h">
+      <Filter>Header Files\Date Time</Filter>
+    </ClInclude>
+    <ClInclude Include="ALM.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BrentSolver.h">
       <Filter>Header Files\Optimization\Solvers</Filter>
     </ClInclude>
   </ItemGroup>

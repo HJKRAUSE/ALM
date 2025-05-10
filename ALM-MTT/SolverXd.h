@@ -24,10 +24,29 @@
 
 #pragma once
 
-#include <ql/quantlib.hpp>
+#include <Eigen/dense>
+#include <functional>
+#include "TaskExecutor.h"
+#include "SingleThreadedExecutor.h"
 
 namespace ALM {
 
-	using Curve = QuantLib::YieldTermStructure;
+	struct SolverXdResults {
+		Eigen::VectorXd x;
+		double objective;
+		int iterations;
+		bool success;
+	};
+
+	class SolverXd {
+	public:
+		virtual ~SolverXd() = default;
+		virtual SolverXdResults solve(
+			const std::function<double(Eigen::VectorXd)>& f, 
+			const Eigen::VectorXd& x0) = 0;
+	protected:
+		SolverXd() = default;
+	};
+
 
 }

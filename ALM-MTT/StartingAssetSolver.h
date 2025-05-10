@@ -25,7 +25,7 @@
 #pragma once
 
 #include "Projection.h"
-#include <ql/math/solvers1d/brent.hpp>
+#include "BrentSolver.h"
 
 namespace ALM {
 
@@ -51,20 +51,18 @@ namespace ALM {
         double solve(
             Projection& projection,
             int max_evaluations = 1000,
-            double tolerance = 1e-6,
-            double guess = 1.0,
             double lower_bound = 0.0,
-            double upper_bound = 100.0)
+            double upper_bound = 100.0,
+            double guess = 1.0)
         {
-            QuantLib::Brent solver;
-            solver.setMaxEvaluations(max_evaluations);
 
             auto f = [&](double scalar) {
                 auto x = projection.run(scalar).ending_surplus;
                 return x;
                 };
+            BrentSolver solver;
 
-            return solver.solve(f, tolerance, guess, lower_bound, upper_bound);
+            return solver.solve(f, lower_bound, upper_bound, guess);
         }
     };
 

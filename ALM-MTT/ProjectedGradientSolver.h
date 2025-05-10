@@ -24,13 +24,13 @@
 
 #pragma once
 #include <Eigen/dense>
-#include "Solver.h"
+#include "SolverXd.h"
 #include "Constraint.h"
 #include "UI.h"
 
 namespace ALM {
 
-    class ProjectedGradientSolver : public Solver {
+    class ProjectedGradientSolver : public SolverXd {
     public:
         ProjectedGradientSolver(
             std::vector<std::shared_ptr<Constraint>> constraints = {},
@@ -44,7 +44,7 @@ namespace ALM {
             tol_(tolerance) {
         }
 
-        SolverResults solve(const std::function<double(Eigen::VectorXd)>& f,
+        SolverXdResults solve(const std::function<double(Eigen::VectorXd)>& f,
             const Eigen::VectorXd& x0) override {
 
             Eigen::VectorXd x = x0;

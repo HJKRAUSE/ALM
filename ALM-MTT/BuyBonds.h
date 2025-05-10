@@ -24,12 +24,13 @@
 
 #pragma once
 
-#include "RelinkableHandle.h"
-#include <ql/quantlib.hpp>
+#include "Date.h"
 #include "Portfolio.h"
 #include "CashFlowBuilder.h"
 #include "Date.h"
+#include "YieldCurve.h"
 #include "Strategy.h"
+#include "BrentSolver.h"
 
 namespace ALM {
 
@@ -40,7 +41,7 @@ namespace ALM {
      * percentage of available cash to use, the coupon rate, and the bond tenor.
      */
     class BuyBonds : public Strategy {
-        using CurveHandle = RelinkableHandle<QuantLib::YieldTermStructure>;
+        using CurveHandle = RelinkableHandle<YieldCurve>;
 
     public:
         /**
@@ -51,7 +52,7 @@ namespace ALM {
         struct BondTemplate {
             double proportion;       ///< Fraction of available cash to allocate (e.g. 0.25 = 25%)
             double coupon;           ///< Fixed coupon rate (annual)
-            QuantLib::Period tenor;  ///< Bond tenor (e.g. 5Y, 10Y)
+            Duration tenor;         ///< Bond tenor (e.g. 5Y, 10Y)
         };
 
         /**
@@ -69,21 +70,35 @@ namespace ALM {
             double& cash,
             Date step_start,
             Date step_end,
-            const std::shared_ptr<const Curve>& curve,
-            const std::shared_ptr<TaskExecutor>& executor) override
+            const std::shared_ptr<const YieldCurve>& curve) override
         {
             if (cash <= 0.0)
                 return;
+
+            BrentSolver solver;
 
             for (const auto& bond_template : templates_) {
                 double amount = cash * bond_template.proportion;
                 if (amount < 1e-6) continue;  // Skip tiny allocations
 
+                auto f = [&](double x) {
+                    Asset bond = Asset(CashFlowBuilder::fixedRateBond(
+                        step_start,
+                        step_start + bond_template.tenor,
+                        bond_template.coupon,
+                        x));
+
+                    return bond.marketValue(curve, step_start) - amount;
+
+                    };
+
+                double notional = solver.solve(f, 0.0, 1e10, amount);
+
                 Asset bond = Asset(CashFlowBuilder::fixedRateBond(
                     step_start,
                     step_start + bond_template.tenor,
                     bond_template.coupon,
-                    amount));
+                    notional));
 
                 portfolio.addAsset(std::move(bond));
                 cash -= amount;

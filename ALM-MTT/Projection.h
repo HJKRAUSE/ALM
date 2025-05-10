@@ -24,13 +24,11 @@
 
 #pragma once
 
-#include <ql/quantlib.hpp>
 #include <vector>
 #include <memory>
 #include "Date.h"
 #include "Portfolio.h"
-#include "RelinkableHandle.h"
-#include "Curve.h"
+#include "YieldCurve.h"
 #include "TaskExecutor.h"
 #include "Strategy.h"
 #include "UI.h"
@@ -75,15 +73,13 @@ namespace ALM {
             Portfolio assets,
             Portfolio liabilities,
             std::shared_ptr<Strategy> strategy,
-            std::shared_ptr<TaskExecutor> executor,
-            std::shared_ptr<Curve> curve,
+            std::shared_ptr<YieldCurve> curve,
             Date start,
             Date end,
-            Period step = Period(1, TimeUnit::Months))
+            Duration step = Duration(1, Duration::Unit::Months))
             : assets_(std::move(assets)),
             liabilities_(std::move(liabilities)),
             strategy_(std::move(strategy)),
-            executor_(std::move(executor)),
             curve_(std::move(curve)),
             start_(start),
             end_(end),
@@ -113,8 +109,8 @@ namespace ALM {
                 result.dates.push_back(current);
 
                 // Asset and liability valuation at beginning of period
-                double mv = portfolio.marketValue(curve_, current, executor_);
-                double liability_mv = liabilities_.marketValue(curve_, current, executor_);
+                double mv = portfolio.marketValue(curve_, current);
+                double liability_mv = liabilities_.marketValue(curve_, current);
 
                 result.assets_bop.push_back(mv);
                 result.liabilities_bop.push_back(liability_mv);
@@ -122,14 +118,14 @@ namespace ALM {
                 result.surplus_bop.push_back(mv + cash - liability_mv);
 
                 // Asset inflows and liability outflows
-                double asset_cf = portfolio.cashFlow(current, next, executor_);
-                double liability_cf = liabilities_.cashFlow(current, next, executor_);
+                double asset_cf = portfolio.cashFlow(current, next);
+                double liability_cf = liabilities_.cashFlow(current, next);
 
                 cash += asset_cf - liability_cf;
 
                 // Apply strategy logic
                 if (strategy_) {
-                    strategy_->apply(portfolio, cash, current, next, curve_, executor_);
+                    strategy_->apply(portfolio, cash, current, next, curve_);
                 }
 
                 current = next;
@@ -145,11 +141,10 @@ namespace ALM {
         Portfolio assets_;
         Portfolio liabilities_;
         std::shared_ptr<Strategy> strategy_;
-        std::shared_ptr<TaskExecutor> executor_;
-        std::shared_ptr<Curve> curve_;
+        std::shared_ptr<YieldCurve> curve_;
         Date start_;
         Date end_;
-        Period step_;
+        Duration step_;
     };
 
 }

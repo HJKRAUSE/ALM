@@ -3,13 +3,13 @@
 #include <functional>
 #include <vector>
 #include <memory>
-#include "Solver.h"
+#include "SolverXd.h"
 #include "Constraint.h"
 #include "UI.h"
 
 namespace ALM {
 
-    class TrustRegionSolver : public Solver {
+    class TrustRegionSolver : public SolverXd {
     public:
         TrustRegionSolver(
             std::vector<std::shared_ptr<Constraint>> constraints = {},
@@ -24,7 +24,7 @@ namespace ALM {
             tol_(tolerance) {
         }
 
-        SolverResults solve(const std::function<double(Eigen::VectorXd)>& f,
+        SolverXdResults solve(const std::function<double(Eigen::VectorXd)>& f,
             const Eigen::VectorXd& x0) override {
 
             Eigen::VectorXd x = x0;

@@ -25,11 +25,10 @@
 #pragma once
 
 #include "RelinkableHandle.h"
-#include <ql/quantlib.hpp>
 #include "Portfolio.h"
 #include "CashFlowBuilder.h"
 #include "Date.h"
-#include "Curve.h"
+#include "YieldCurve.h"
 
 namespace ALM {
 
@@ -60,10 +59,9 @@ namespace ALM {
         virtual void apply(
             Portfolio& portfolio,
             double& cash,
-            QuantLib::Date step_start,
-            QuantLib::Date step_end,
-            const std::shared_ptr<const Curve>& curve,
-            const std::shared_ptr<TaskExecutor>& executor) = 0;
+            Date step_start,
+            Date step_end,
+            const std::shared_ptr<const YieldCurve>& curve) = 0;
     };
 
 }

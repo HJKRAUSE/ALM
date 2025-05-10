@@ -24,7 +24,6 @@
 
 #pragma once
 
-#include <ql/quantlib.hpp>
 #include <vector>
 #include <memory>
 #include <iostream>
@@ -36,8 +35,7 @@
 #include "TaskExecutor.h"
 #include "Projection.h"
 #include "StartingAssetSolver.h"
-#include "Curve.h"
-//#include "RelinkableHandle.h"
+#include "YieldCurve.h"
 
 namespace ALM {
 
@@ -66,10 +64,10 @@ namespace ALM {
             Portfolio liabilities,
             std::shared_ptr<Strategy> strategy,
             std::shared_ptr<TaskExecutor> executor,
-            std::vector<std::shared_ptr<Curve>> curves,
+            std::vector<std::shared_ptr<YieldCurve>> curves,
             Date start,
             Date end,
-            Period step = Period(1, TimeUnit::Months)) : 
+            Duration step = Duration(1, Duration::Unit::Months)) : 
             assets_(std::move(assets)),
             liabilities_(std::move(liabilities)),
             strategy_(std::move(strategy)),
@@ -99,13 +97,12 @@ namespace ALM {
             StartingAssetSolver solver;
 
             for (size_t i = 0; i < curves_.size(); ++i) {
-                auto curve = curves_[i];
+                std::shared_ptr<YieldCurve> curve = curves_[i];
                 auto task = [&]() {
                     Projection projection(
                         assets_,
                         liabilities_,
                         strategy_,
-                        executor_,
                         curve,
                         start_,
                         end_,
@@ -133,10 +130,10 @@ namespace ALM {
         Portfolio liabilities_;
         std::shared_ptr<Strategy> strategy_;
         std::shared_ptr<TaskExecutor> executor_;
-        std::vector<std::shared_ptr<Curve>> curves_;
+        std::vector<std::shared_ptr<YieldCurve>> curves_;
         Date start_;
         Date end_;
-        Period step_;
+        Duration step_;
     };
 
 }

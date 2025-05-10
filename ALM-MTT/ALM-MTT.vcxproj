@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\hjkra\source\repos\QuantLib-1.37;C:\Users\hjkra\source\repos\boost_1_87_0;C:\Users\hjkra\source\repos\eigen-master;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\hjkra\source\repos\QuantLib-1.37\lib;C:\Users\hjkra\source\repos\boost_1_87_0\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\hjkra\source\repos\eigen-master;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\hjkra\source\repos\QuantLib-1.37;C:\Users\hjkra\source\repos\boost_1_87_0;C:\Users\hjkra\source\repos\eigen-master;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\hjkra\source\repos\QuantLib-1.37\lib;C:\Users\hjkra\source\repos\boost_1_87_0\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\hjkra\source\repos\eigen-master;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -137,29 +137,34 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ALM.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="BoxConstraint.h" />
+    <ClInclude Include="BrentSolver.h" />
     <ClInclude Include="BuyBonds.h" />
+    <ClInclude Include="Calendar.h" />
     <ClInclude Include="CashFlow.h" />
     <ClInclude Include="CashFlowBuilder.h" />
     <ClInclude Include="Constraint.h" />
-    <ClInclude Include="Curve.h" />
     <ClInclude Include="Date.h" />
+    <ClInclude Include="DayCounter.h" />
+    <ClInclude Include="FlatForward.h" />
     <ClInclude Include="ProjectedGradientSolver.h" />
     <ClInclude Include="MultiScenarioProjection.h" />
     <ClInclude Include="MultiThreadedExecutor.h" />
     <ClInclude Include="Portfolio.h" />
     <ClInclude Include="Projection.h" />
     <ClInclude Include="RebalanceStrategy.h" />
-    <ClInclude Include="RelinkableHandle.h" />
+    <ClInclude Include="Schedule.h" />
     <ClInclude Include="SellProRata.h" />
     <ClInclude Include="SingleThreadedExecutor.h" />
-    <ClInclude Include="Solver.h" />
+    <ClInclude Include="SolverXd.h" />
     <ClInclude Include="StartingAssetSolver.h" />
     <ClInclude Include="Strategy.h" />
     <ClInclude Include="TaskExecutor.h" />
     <ClInclude Include="TrustRegionSolver.h" />
     <ClInclude Include="UI.h" />
+    <ClInclude Include="YieldCurve.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />

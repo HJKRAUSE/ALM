@@ -24,10 +24,11 @@
 
 #pragma once
 
-#include <ql/quantlib.hpp>
 #include <vector>
 #include "Date.h"
 #include "CashFlow.h"
+#include "Calendar.h"
+#include "Schedule.h"
 
 namespace ALM {
 
@@ -36,20 +37,6 @@ namespace ALM {
      */
     class CashFlowBuilder {
     public:
-        /**
-         * @brief Converts a QuantLib Leg to a vector of ALM::CashFlow.
-         * @param leg The QuantLib Leg (vector of shared_ptr<CashFlow>).
-         * @return A flat vector of ALM::CashFlow with date and amount extracted.
-         */
-        static std::vector<CashFlow> fromLeg(const QuantLib::Leg& leg) {
-            std::vector<CashFlow> out;
-            out.reserve(leg.size());
-            for (const auto& cf : leg) {
-                out.push_back({ cf->date(), cf->amount() });
-            }
-            return out;
-        }
-
         /**
          * @brief Creates cash flows for a fixed-rate bond with coupon payments and final principal.
          *
@@ -68,24 +55,21 @@ namespace ALM {
             Date maturity_date,
             double coupon,
             double notional,
-            QuantLib::Frequency frequency = QuantLib::Semiannual,
-            const QuantLib::Calendar& calendar = QuantLib::NullCalendar(),
-            const QuantLib::DayCounter& dc = QuantLib::ActualActual(QuantLib::ActualActual::Actual365),
-            const QuantLib::BusinessDayConvention& bdc = QuantLib::Unadjusted)
+            Duration frequency = Duration(6, Duration::Unit::Months),
+            const Calendar& calendar = Calendar(),
+            const DayCounter& dc = DayCounter(DayCounter::Convention::ActualActual))
         {
-            using namespace QuantLib;
+            std::vector<CashFlow> cash_flows;
+            Schedule schedule(issue_date, maturity_date, frequency, calendar, true);
 
-            Schedule schedule(issue_date, maturity_date, Period(frequency),
-                calendar, bdc, bdc, DateGeneration::Forward, false);
+            // skip issue date...
+            for (auto i = 1; i < schedule.size(); i++) {
+                cash_flows.emplace_back(CashFlow(schedule[i], notional * coupon));
+            }
+            
+            cash_flows.emplace_back(CashFlow(calendar.adjust(maturity_date), notional));
 
-            Leg leg = FixedRateLeg(schedule)
-                .withCouponRates(coupon, dc)
-                .withNotionals(notional);
-
-            // Add principal repayment at maturity
-            leg.push_back(std::make_shared<SimpleCashFlow>(notional, maturity_date));
-
-            return fromLeg(leg);
+            return cash_flows;
         }
 
         /**

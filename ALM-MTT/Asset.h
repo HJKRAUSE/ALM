@@ -26,8 +26,9 @@
 
 #include <vector>
 #include "Date.h"
+#include "DayCounter.h"
+#include "YieldCurve.h"
 #include "CashFlow.h"
-#include "Curve.h"
 
 namespace ALM {
 
@@ -54,7 +55,7 @@ namespace ALM {
          * @param ref The reference date for pricing.
          * @return Present value of future cash flows after the reference date, scaled by volume.
          */
-        double marketValue(const std::shared_ptr<const Curve>& curve, const Date& ref) const {
+        double marketValue(const std::shared_ptr<const YieldCurve>& curve, const Date& ref) const {
             double total = 0.0;
             for (const auto& cf : cash_flows_) {
                 if (cf.date >= ref) {
@@ -62,7 +63,7 @@ namespace ALM {
                     total += cf.amount * df;
                 }
             }
-            return total * volume_;
+            return total * volume_ / curve->discount(ref);
         }
 
         /**

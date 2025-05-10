@@ -28,7 +28,7 @@
 #include "Portfolio.h"
 #include "Strategy.h"
 #include "Date.h"
-#include "Curve.h"
+#include "YieldCurve.h"
 
 namespace ALM {
 
@@ -47,15 +47,14 @@ namespace ALM {
             double& cash,
             Date step_start,
             Date step_end,
-            const std::shared_ptr<const Curve>& curve,
-            const std::shared_ptr<TaskExecutor>& executor) override
+            const std::shared_ptr<const YieldCurve>& curve) override
         {
             // No action needed if cash is positive
             if (cash >= 0.0)
                 return;
 
             double need = -cash;
-            double total_mv = portfolio.marketValue(curve, step_start, executor);
+            double total_mv = portfolio.marketValue(curve, step_start);
 
             if (total_mv <= 0.0)
                 return;

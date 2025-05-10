@@ -1,22 +1,27 @@
 # Simple Asset-Liability Projection
+* Header-only
+* Requires <eigen/dense> for linear algebra
 
-1. Requires Eigen library for dense linear algebra
-   
-3. Example usage in main.cpp
-   
-4. Projects a portfolio of assets and liabilities and applies reinvestment and disinvestment
-   * Fixed and zero coupon bond cash flow generation is supported
-   * Assets are treated as a cash flow stream - custom assets are possible
-   * Explicit liability calculations are not supported (should be proxied with zero coupon bonds)
+This library provides the functionality to create and optimize asset-liability projections across multiple scenarios.
 
-5. Bermuda-style multiple scenario projections are supported
-   * Multi-threaded
-   * Solves starting asset balance such that ending surplus == 0
+## Useful, generic features
+* Multithreading (TaskExecutor classes)
+  ** Wraps the threadpool in <windows.h>
+  ** Simplified API and usage
   
-6. Optimization layer solves for the optimal asset portfolio needed to mature liabilities
-   
-7. Optional UI functionality included
-   * Not used outside of the final optimization layer to reduce message verbosity
+* Calendar dates
+  ** 1970-01-01 epoch
+  ** Based on Howard Hinnent's algorithms for serial number calculations
+
+* Day counters and holiday calendars
+  ** Actual actual
+  ** Actual 365
+  ** Thirty 360
+  
+* Constrained linear/non-linear solvers
+  ** Brent's method
+  ** Gradient descent
+  ** Trust region (dogleg step)
 
 # How to use
 

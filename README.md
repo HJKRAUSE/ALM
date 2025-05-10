@@ -2,18 +2,20 @@
 
 1. Requires Eigen library for dense linear algebra
    
-3. Projects a portfolio of assets and liabilities and applies reinvestment and disinvestment
+3. Example usage in main.cpp
+   
+4. Projects a portfolio of assets and liabilities and applies reinvestment and disinvestment
    * Fixed and zero coupon bond cash flow generation is supported
    * Assets are treated as a cash flow stream - custom assets are possible
    * Explicit liability calculations are not supported (should be proxied with zero coupon bonds)
 
-4. Bermuda-style multiple scenario projections are supported
+5. Bermuda-style multiple scenario projections are supported
    * Multi-threaded
    * Solves starting asset balance such that ending surplus == 0
   
-5. Optimization layer solves for the optimal asset portfolio needed to mature liabilities
+6. Optimization layer solves for the optimal asset portfolio needed to mature liabilities
    
-6. Optional UI functionality included
+7. Optional UI functionality included
    * Not used outside of the final optimization layer to reduce message verbosity
 
 # How to use

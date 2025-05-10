@@ -25,12 +25,13 @@ This library provides the functionality to create and optimize asset-liability p
 
 # How to use
 
-1. Set a reference date
-2. Create yield curves to model
-3. Create an asset portfolio
-4. Create a liability portfolio
-5. Set reinvestment and disinvestment strategies
-6. Create a lambda wrapper around projection class that returns some metric
+1. Include "ALM.h"
+2. Set a reference date
+3. Create yield curves to model
+4. Create an asset portfolio
+5. Create a liability portfolio
+6. Set reinvestment and disinvestment strategies
+7. Create a lambda wrapper around projection class that returns some metric
  * In main.cpp, this is the Bermuda reserve
 8. Initialize a non-linear solver
 9. Apply solver to lambda 

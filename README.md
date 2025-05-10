@@ -6,22 +6,22 @@ This library provides the functionality to create and optimize asset-liability p
 
 ## Useful, generic features
 * Multithreading (TaskExecutor classes)
-  ** Wraps the threadpool in <windows.h>
-  ** Simplified API and usage
+  * Wraps the threadpool in <windows.h>
+  * Simplified API and usage
   
 * Calendar dates
-* * 1970-01-01 epoch
-* * Based on Howard Hinnent's algorithms for serial number calculations
+  * 1970-01-01 epoch
+  * Based on Howard Hinnent's algorithms for serial number calculations
 
 * Day counters and holiday calendars
-* * Actual actual
-* * Actual 365
-* * Thirty 360
+  * Actual actual
+  * Actual 365
+  * Thirty 360
   
 * Constrained linear/non-linear solvers
- * Brent's method
- * Gradient descent
- * Trust region (dogleg step)
+  * Brent's method
+  * Gradient descent
+  * Trust region (dogleg step)
 
 # How to use
 

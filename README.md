@@ -14,14 +14,14 @@ This library provides the functionality to create and optimize asset-liability p
   * Based on Howard Hinnent's algorithms for serial number calculations
 
 * Day counters and holiday calendars
-  ** Actual actual
-  ** Actual 365
-  ** Thirty 360
+ * Actual actual
+ * Actual 365
+ * Thirty 360
   
 * Constrained linear/non-linear solvers
-  ** Brent's method
-  ** Gradient descent
-  ** Trust region (dogleg step)
+ * Brent's method
+ * Gradient descent
+ * Trust region (dogleg step)
 
 # How to use
 
@@ -31,6 +31,6 @@ This library provides the functionality to create and optimize asset-liability p
 4. Create a liability portfolio
 5. Set reinvestment and disinvestment strategies
 6. Create a lambda wrapper around projection class that returns some metric
-   * In main.cpp, this is the Bermuda reserve
+ * In main.cpp, this is the Bermuda reserve
 8. Initialize a non-linear solver
 9. Apply solver to lambda 
